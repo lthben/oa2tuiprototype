@@ -16,9 +16,9 @@
 
 #include <Arduino.h>
 #include <M5StickCPlus.h>
-// #include <DFRobot_PAJ7620U2.h>
+#include <DFRobot_PAJ7620U2.h>
 
-// DFRobot_PAJ7620U2 paj;
+DFRobot_PAJ7620U2 paj;
 
 void setup()
 {
@@ -27,14 +27,14 @@ void setup()
 
   // Serial.begin(115200);
   // delay(300);
-  /*
+  
   Serial.println("Gesture recognition system base on PAJ7620U2");
   while (paj.begin() != 0) {
     Serial.println("initial PAJ7620U2 failure! Please check if all the connections are fine, or if the wire sequence is correct?");
     delay(500);
   }
   Serial.println("PAJ7620U2 init completed, start to test the gesture recognition function");
-*/
+
   /*Set fast detection mode
     If the parameter is set to false, the module enters slow detection mode, and it detects one gesture every 2s. We have integrated
     some gestures inside the module to make it convenient for beginners.
@@ -48,7 +48,7 @@ void setup()
     Since users only use limited gestures in this mode, we are not going to integrate too much expanded gestures in the library.
     If necessary, you can complete the algorithm logic in the ino file by yourself.
   */
-  // paj.setGestureHighRate(true);
+  paj.setGestureHighRate(true);
 
   M5.Lcd.setRotation(1);  // Rotate the screen. 将屏幕旋转
   M5.Lcd.setTextSize(4);
@@ -63,16 +63,16 @@ void loop()
 {
   M5.update(); //read press state of the buttons
 
-if (M5.BtnA.wasReleased()) {
-  M5.Lcd.fillScreen(BLACK);
-  M5.Lcd.setCursor(80, 50);
-  M5.Lcd.print("UP");
-} else if (M5.BtnB.wasReleased()) {
-  M5.Lcd.fillScreen(BLACK);
-  M5.Lcd.setCursor(80, 50);
-  M5.Lcd.print("DOWN");  
-} 
-/*
+// if (M5.BtnA.wasReleased()) {
+//   M5.Lcd.fillScreen(BLACK);
+//   M5.Lcd.setCursor(80, 50);
+//   M5.Lcd.print("UP");
+// } else if (M5.BtnB.wasReleased()) {
+//   M5.Lcd.fillScreen(BLACK);
+//   M5.Lcd.setCursor(80, 50);
+//   M5.Lcd.print("DOWN");  
+// } 
+
 
   // Read gesture number（return eGesture_t enumerated type）
   //    eGestureNone  eGestureRight  eGestureLeft  eGestureUp  eGestureDown  eGestureForward
@@ -100,5 +100,5 @@ if (M5.BtnA.wasReleased()) {
     else if (gesture == 2) M5.Lcd.print("LEFT");
   }
 
-  */
+  
 }
