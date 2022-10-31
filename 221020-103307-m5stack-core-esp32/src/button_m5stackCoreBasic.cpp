@@ -9,14 +9,13 @@
 #include <Arduino.h>
 #include <M5Stack.h>
 
-int last_values[4] = {0, 0, 0, 0};
-int curr_values[4] = {0, 0, 0, 0};
+int curr_values[4] = { 0, 0, 0, 0 };
 
 //NOTE: the opposite facing pins on the M5Stack are actually mirroring the same pins, so there are actually only 2 rows of pins
-#define PIN1 17 
-#define PIN2 21
-#define PIN3 22
-#define PIN4 36
+#define PIN1 21 //red
+#define PIN2 22 //white
+#define PIN3 35 //blue 
+#define PIN4 36 //green
 
 void setup() {
   M5.begin();
@@ -26,80 +25,56 @@ void setup() {
   pinMode(PIN3, INPUT);
   pinMode(PIN4, INPUT);
   M5.Lcd.setTextColor(
-    YELLOW);
-  M5.Lcd.setTextSize(2);
-  M5.Lcd.setCursor(
-    80, 0);  
-  M5.Lcd.println("Button test");
-  M5.Lcd.setTextColor(WHITE);
+    WHITE);
+  M5.Lcd.drawCentreString("Button test", 160, 100, 4);
+  delay(1000);
+  M5.Lcd.fillRect(0, 0, 360, 240, //x, y, width, height
+    BLACK);
 }
 
 void loop() {
 
-M5.update();
-M5.Lcd.setCursor(80, 25);
-  M5.Lcd.print("Button");
-  M5.Lcd.setCursor(0, 45);
-  M5.Lcd.print("Value: ");
-  M5.Lcd.setCursor(0, 85);
-  M5.Lcd.print("State: ");
+  M5.update();
 
-  //to test bluetooth functionality
-  if (M5.BtnA.wasReleased()) {
-    curr_values[0] = 1;
-  } else if (M5.BtnB.wasReleased()) {
-    curr_values[1] = 1;
-  } else if (M5.BtnC.wasReleased()) {
-    curr_values[2] = 1;
+  //Cartesian coordinates, 0,0 is top left
+  //Pins are active low, so 0 is pressed, 1 is not pressed
+  curr_values[0] = digitalRead(PIN1); curr_values[1] = digitalRead(PIN2);    curr_values[2] = digitalRead(PIN3);    curr_values[3] = digitalRead(PIN4);
+
+  if (curr_values[0] == 0) {
+    M5.Lcd.clear();
+    M5.Lcd.setTextColor(
+      RED);
+    M5.Lcd.drawCentreString("I AM COMPLETELY LOST", 160, 100, 4);
+    delay(1000);
+    M5.Lcd.clear();
+  }
+  else  if (curr_values[1] == 0) {
+    M5.Lcd.clear();
+    M5.Lcd.setTextColor(
+      WHITE);
+    M5.Lcd.drawCentreString("I NEED MORE PRACTICE", 160, 100, 4);
+    delay(1000);
+    M5.Lcd.clear();
+  }
+  else if (curr_values[2] == 0) {
+    M5.Lcd.clear();
+    M5.Lcd.setTextColor(
+      BLUE);
+    M5.Lcd.drawCentreString("I AM GETTING THERE", 160, 100, 4);
+    delay(1000);
+    M5.Lcd.clear();
+  }
+  else if (curr_values[3] == 0) {
+    M5.Lcd.clear();
+    M5.Lcd.setTextColor(
+      GREEN);
+    M5.Lcd.drawCentreString("I AM A PRO", 160, 100, 4);
+    delay(1000);
+    M5.Lcd.clear();
   }
 
-   for (int i = 0; i < 4; i++) {
-    if (curr_values[i] != last_values[i]) {
-      M5.Lcd.fillRect(85, 45, 125, 85,
-                      BLACK);
-      if (curr_values[i] == 1) {
-        M5.Lcd.setCursor(95, 45);
-        M5.Lcd.print(i+1);  
-        M5.Lcd.setCursor(95, 85);
-        M5.Lcd.print("pressed");
-        delay(1000);
-        curr_values[i] = 0;
-    
-        M5.Lcd.setCursor(95, 45);
-        M5.Lcd.print("nil");  
-        M5.Lcd.setCursor(95, 85);
-        M5.Lcd.print("released");
-      }
-      last_values[i] = curr_values[i];
-    }
-  }
+  M5.Lcd.setTextColor(
+    WHITE);
+  M5.Lcd.drawCentreString("Press a button", 160, 100, 4);
 
-  
-  
-   curr_values[0] = digitalRead(PIN1);    curr_values[1] = digitalRead(PIN2);    curr_values[2] = digitalRead(PIN3);    curr_values[3] = digitalRead(PIN4);
-  M5.Lcd.setCursor(80, 25);
-  M5.Lcd.print("Button");
-  M5.Lcd.setCursor(0, 45);
-  M5.Lcd.print("Value: ");
-  M5.Lcd.setCursor(0, 85);
-  M5.Lcd.print("State: ");
-  for (int i = 0; i < 4; i++) {
-    if (curr_values[i] != last_values[i]) {
-      M5.Lcd.fillRect(85, 45, 125, 85,
-                      BLACK);
-      if (curr_values[i] == 0) {
-        M5.Lcd.setCursor(95, 45);
-        M5.Lcd.print(i+1);  
-        M5.Lcd.setCursor(95, 85);
-        M5.Lcd.print("pressed");
-      } else {
-        M5.Lcd.setCursor(95, 45);
-        M5.Lcd.print("nil");  
-        M5.Lcd.setCursor(95, 85);
-        M5.Lcd.print("released");
-      }
-      last_values[i] = curr_values[i];
-    }
-  }
-  
 }
