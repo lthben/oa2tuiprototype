@@ -14,6 +14,11 @@
 #include <M5StickCPlus.h>
 #include <M5Display.h>
 #include "adventure-icon.h"
+#include "elf-icon.h"
+#include "unicorn-icon.h"
+#include "knight-icon.h"
+#include "sword-icon.h"
+#include "spellbook-icon.h"
 
 float accX = 0.0F;
 float accY = 0.0F;
@@ -48,8 +53,7 @@ void setup()
 void loop()
 // screen resolution for M5stickPlus: 240 x 135
 {
-  M5.Lcd.drawBitmap(0, 0, logoWidth, logoHeight, (uint16_t *)adventure_icon_logo);
-  /*
+
   static float temp = 0;
   // M5.IMU.getGyroData(&gyroX, &gyroY, &gyroZ);
   // M5.IMU.getAccelData(&accX, &accY, &accZ);
@@ -67,33 +71,38 @@ void loop()
   //    M5.Lcd.setCursor(30, 95);
   //    M5.Lcd.printf("Temperature : %.2f C", temp);
 
-  M5.Lcd.setTextSize(1);
-  M5.Lcd.setCursor(30, 25);
-  M5.Lcd.printf(" %5.2f   %5.2f   %5.2f   ", pitch, roll, yaw);
+  // M5.Lcd.setTextSize(1);
+  // M5.Lcd.setCursor(30, 25);
+  // M5.Lcd.printf(" %5.2f   %5.2f   %5.2f   ", pitch, roll, yaw);
 
   if (pitch > -30 && pitch < 30 && roll > -30 && roll < 30)
-    displayResult("1");
+    // displayResult("1");
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)adventure_icon_logo);
 
   else if (pitch < -60 && pitch > -120 && roll > 60 && roll < 120)
-    displayResult("2");
+    // displayResult("2");
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)elf_icon_logo);
 
   else if (pitch > 60 && pitch < 120 && roll > -120 && roll < -50)
-    displayResult("3");
+    // displayResult("3");
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)unicorn_icon_logo);
 
   else if (pitch > -30 && pitch < 30 && roll > -120 && roll < -60)
-    displayResult("4");
+    // displayResult("4");
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)sword_icon_logo);
 
   else if (pitch > -30 && pitch < 30 && roll > 60 && roll < 120)
-    displayResult("5");
+    // displayResult("5");
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)spellbook_icon_logo);
 
   else if (pitch > -30 && pitch < 30 && (roll > 150 || roll < -150))
-    displayResult("6");
+    // displayResult("6");
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)knight_icon_logo);
 
   else
     displayResult("");
 
-  delay(20); // determines the responsiveness, 20ms is sweet spot
-  */
+  delay(30); // determines the responsiveness, tradeoff with dither, 30ms is sweet spot
 }
 
 void displayResult(String myText)
