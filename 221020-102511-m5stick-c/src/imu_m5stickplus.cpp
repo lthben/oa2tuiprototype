@@ -12,6 +12,8 @@
 */
 #include <Arduino.h>
 #include <M5StickCPlus.h>
+#include <M5Display.h>
+#include "adventure-icon.h"
 
 float accX = 0.0F;
 float accY = 0.0F;
@@ -46,6 +48,8 @@ void setup()
 void loop()
 // screen resolution for M5stickPlus: 240 x 135
 {
+  M5.Lcd.drawBitmap(0, 0, logoWidth, logoHeight, (uint16_t *)adventure_icon_logo);
+  /*
   static float temp = 0;
   // M5.IMU.getGyroData(&gyroX, &gyroY, &gyroZ);
   // M5.IMU.getAccelData(&accX, &accY, &accZ);
@@ -89,6 +93,7 @@ void loop()
     displayResult("");
 
   delay(20); // determines the responsiveness, 20ms is sweet spot
+  */
 }
 
 void displayResult(String myText)
