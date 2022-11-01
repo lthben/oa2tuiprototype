@@ -22,14 +22,15 @@ DFRobot_PAJ7620U2 paj;
 
 void setup()
 {
-  M5.begin();        // Init M5Core.  初始化 M5Core
+  M5.begin(); // Init M5Core.  初始化 M5Core
   //  M5.Power.begin();  // Init Power module.  初始化电源模块
 
-  // Serial.begin(115200);
+  Serial.begin(115200);
   // delay(300);
-  
+
   Serial.println("Gesture recognition system base on PAJ7620U2");
-  while (paj.begin() != 0) {
+  while (paj.begin() != 0)
+  {
     Serial.println("initial PAJ7620U2 failure! Please check if all the connections are fine, or if the wire sequence is correct?");
     delay(500);
   }
@@ -50,55 +51,69 @@ void setup()
   */
   paj.setGestureHighRate(true);
 
-  M5.Lcd.setRotation(1);  // Rotate the screen. 将屏幕旋转
-  M5.Lcd.setTextSize(4);
+  M5.Lcd.setRotation(1); // Rotate the screen. 将屏幕旋转
 
-M5.Lcd.setCursor(80, 50);
-M5.Lcd.print("Hello");
-delay(1000);
-
+  M5.Lcd.drawCentreString("Gesture", 120, 60, 4);
 }
 
 void loop()
+// M5stick lcd resolution: 240x135
 {
-  M5.update(); //read press state of the buttons
+  M5.update(); // read press state of the buttons
 
-// if (M5.BtnA.wasReleased()) {
-//   M5.Lcd.fillScreen(BLACK);
-//   M5.Lcd.setCursor(80, 50);
-//   M5.Lcd.print("UP");
-// } else if (M5.BtnB.wasReleased()) {
-//   M5.Lcd.fillScreen(BLACK);
-//   M5.Lcd.setCursor(80, 50);
-//   M5.Lcd.print("DOWN");  
-// } 
-
+  // if (M5.BtnA.wasReleased()) {
+  //   M5.Lcd.fillScreen(BLACK);
+  //   M5.Lcd.setCursor(80, 50);
+  //   M5.Lcd.print("UP");
+  // } else if (M5.BtnB.wasReleased()) {
+  //   M5.Lcd.fillScreen(BLACK);
+  //   M5.Lcd.setCursor(80, 50);
+  //   M5.Lcd.print("DOWN");
+  // }
 
   // Read gesture number（return eGesture_t enumerated type）
   //    eGestureNone  eGestureRight  eGestureLeft  eGestureUp  eGestureDown  eGestureForward
   //    eGestureBackward  eGestureClockwise  eGestureAntiClockwise  eGestureWave  eGestureWaveSlowlyDisorder
   //    eGestureWaveSlowlyLeftRight  eGestureWaveSlowlyUpDown  eGestureWaveSlowlyForwardBackward
-  
+
   DFRobot_PAJ7620U2::eGesture_t gesture = paj.getGesture();
-  if (gesture != paj.eGestureNone ) {
-    //  Get the string descritpion corresponding to the gesture number.
-    //    The string description could be
-    //    "None","Right","Left", "Up", "Down", "Forward", "Backward", "Clockwise", "Anti-Clockwise", "Wave",
-    //    "WaveSlowlyDisorder", "WaveSlowlyLeftRight", "WaveSlowlyUpDown", "WaveSlowlyForwardBackward"
-    
-    String description  = paj.gestureDescription(gesture);//Convert gesture number into string description
-       Serial.println("--------------Gesture Recognition System---------------------------");
-       Serial.print("gesture code        = "); Serial.println(gesture);
-       Serial.print("gesture description  = "); Serial.println(description);
-       Serial.println();
 
-    M5.Lcd.setCursor(100, 50);
+  //  Get the string descritpion corresponding to the gesture number.
+  //    The string description could be
+  //    "None","Right","Left", "Up", "Down", "Forward", "Backward", "Clockwise", "Anti-Clockwise", "Wave",
+  //    "WaveSlowlyDisorder", "WaveSlowlyLeftRight", "WaveSlowlyUpDown", "WaveSlowlyForwardBackward"
+
+  String description = paj.gestureDescription(gesture); // Convert gesture number into string description
+
+  if (gesture != paj.eGestureNone) // not interested in no gesture and to avoid spamming the output since this is the default value
+  {
+    Serial.println("--------------Gesture Recognition System---------------------------");
+    Serial.print("gesture code        = ");
+    Serial.println(gesture);
+    Serial.print("gesture description  = ");
+    Serial.println(description);
+    Serial.println();
+
     M5.Lcd.fillScreen(BLACK);
-    if (gesture == 4) M5.Lcd.print("UP");
-    else if (gesture == 8) M5.Lcd.print("DOWN");
-    else if (gesture == 1) M5.Lcd.print("RIGHT");
-    else if (gesture == 2) M5.Lcd.print("LEFT");
-  }
 
-  
+    if (gesture == 4)
+      M5.Lcd.drawCentreString("Up", 120, 60, 4);
+    else if (gesture == 8)
+      M5.Lcd.drawCentreString("Down", 120, 60, 4);
+    else if (gesture == 1)
+      M5.Lcd.drawCentreString("Right", 120, 60, 4);
+    else if (gesture == 2)
+      M5.Lcd.drawCentreString("Left", 120, 60, 4);
+    else if (gesture == 64)
+      M5.Lcd.drawCentreString("Clockwise", 120, 60, 4);
+    else if (gesture == 128)
+      M5.Lcd.drawCentreString("Anti-clockwise", 120, 60, 4);
+    else if (gesture == 16)
+      M5.Lcd.drawCentreString("Forward", 120, 60, 4);
+    else if (gesture == 32)
+      M5.Lcd.drawCentreString("Backward", 120, 60, 4);
+    else
+      // else if (gesture == 3 || gesture == 12 || gesture == 48 || gesture == 256 || gesture == 512)
+      M5.Lcd.drawCentreString("Wave", 120, 60, 4);
+  }
 }
