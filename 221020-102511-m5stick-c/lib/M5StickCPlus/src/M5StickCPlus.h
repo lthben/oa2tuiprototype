@@ -82,34 +82,35 @@
 #include "utility/Speaker.h"
 #include "RTC.h"
 
-class M5StickCPlus {
-   public:
-    M5StickCPlus();
-    void begin(bool LCDEnable = true, bool PowerEnable = true,
-               bool SerialEnable = true);
-    void update();
+class M5StickCPlus
+{
+public:
+       M5StickCPlus();
+       void begin(bool LCDEnable = true, bool PowerEnable = true,
+                  bool SerialEnable = true);
+       void update();
 
-    //! LCD
-    M5Display Lcd = M5Display();
+       //! LCD
+       M5Display Lcd = M5Display();
 
-    //! Power
-    AXP192 Axp = AXP192();
-    SPEAKER Beep;
+       //! Power
+       AXP192 Axp = AXP192();
+       SPEAKER Beep;
 
 #define DEBOUNCE_MS 10
-    Button BtnA = Button(BUTTON_A_PIN, true, DEBOUNCE_MS);
-    Button BtnB = Button(BUTTON_B_PIN, true, DEBOUNCE_MS);
-    //! RTC
-    RTC Rtc;
-    MPU6886 Imu;
+       Button BtnA = Button(BUTTON_A_PIN, true, DEBOUNCE_MS);
+       Button BtnB = Button(BUTTON_B_PIN, true, DEBOUNCE_MS);
+       //! RTC
+       RTC Rtc;
+       MPU6886 Imu;
 
-   private:
-    bool isInited;
-    // uint8_t _wakeupPin;
+private:
+       bool isInited;
+       // uint8_t _wakeupPin;
 };
 
 extern M5StickCPlus M5;
-#define m5  M5
+#define m5 M5
 #define lcd Lcd
 #define axp Axp
 #define imu Imu

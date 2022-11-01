@@ -9,7 +9,8 @@
 #include "Fonts/HZK16.h"
 #include "Fonts/ASC16.h"
 
-typedef enum {
+typedef enum
+{
     JPEG_DIV_NONE,
     JPEG_DIV_2,
     JPEG_DIV_4,
@@ -17,10 +18,16 @@ typedef enum {
     JPEG_DIV_MAX
 } jpeg_div_t;
 
-typedef enum { DontUsedHzk16, InternalHzk16, ExternalHzk16 } Hzk16Types;
+typedef enum
+{
+    DontUsedHzk16,
+    InternalHzk16,
+    ExternalHzk16
+} Hzk16Types;
 
-class M5Display : public TFT_eSPI {
-   public:
+class M5Display : public TFT_eSPI
+{
+public:
     M5Display();
     void begin();
     // void sleep();
@@ -36,7 +43,7 @@ class M5Display : public TFT_eSPI {
     void drawBitmap(int16_t x0, int16_t y0, int16_t w, int16_t h,
                     const uint16_t *data, uint16_t transparent);
 
-    void loadHzk16(Hzk16Types hzkTypes   = InternalHzk16,
+    void loadHzk16(Hzk16Types hzkTypes = InternalHzk16,
                    const char *HZK16Path = "/HZK16",
                    const char *ASC16Path = "/ASC16");
     void setTextWrap(boolean wrap);
@@ -44,13 +51,15 @@ class M5Display : public TFT_eSPI {
     void writeHzk(char *c);
     // Highlight the text (Once set to be true, the text background will not be
     // transparent any more)
-    inline void highlight(bool isHighlight) {
+    inline void highlight(bool isHighlight)
+    {
         highlighted = isHighlight;
     }
     // Set highlight color
-    inline void setHighlightColor(uint16_t color) {
+    inline void setHighlightColor(uint16_t color)
+    {
         highlightcolor = color;
-        istransparent  = false;
+        istransparent = false;
     }
     void qrcode(const char *string, uint16_t x = 5, uint16_t y = 45,
                 uint8_t width = 70, uint8_t version = 7);
@@ -110,13 +119,14 @@ class M5Display : public TFT_eSPI {
     0, uint16_t maxWidth = 0, uint16_t maxHeight = 0, uint16_t offX = 0,
     uint16_t offY = 0, jpeg_div_t scale = JPEG_DIV_NONE);*/
 
-   private:
+private:
     void writeHzkAsc(const char c);
     void writeHzkGbk(const char *c);
 
     bool initHzk16(boolean use, const char *HZK16Path, const char *ASC16Path);
 
-    inline bool isHzk16Used() {
+    inline bool isHzk16Used()
+    {
         return hzk16Used;
     }
 
@@ -129,11 +139,11 @@ class M5Display : public TFT_eSPI {
     uint16_t highlightcolor, ascCharWidth, ascCharHeigth, gbkCharWidth,
         gbkCharHeight;
 
-    Hzk16Types hzk16Type;  // Use of HZK16 and ASC16 font.
+    Hzk16Types hzk16Type; // Use of HZK16 and ASC16 font.
 
-    File Asc16File, Hzk16File,     // Font file
-        *pAsc16File, *pHzk16File;  // Font file pointer
+    File Asc16File, Hzk16File,    // Font file
+        *pAsc16File, *pHzk16File; // Font file pointer
 
-    boolean textwrap;  // If set, 'wrap' text at right edge of display
+    boolean textwrap; // If set, 'wrap' text at right edge of display
 };
 #endif

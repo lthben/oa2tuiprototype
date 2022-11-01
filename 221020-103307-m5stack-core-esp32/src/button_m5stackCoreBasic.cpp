@@ -38,7 +38,10 @@ void loop() {
 
   //Cartesian coordinates, 0,0 is top left
   //Pins are active low, so 0 is pressed, 1 is not pressed
-  curr_values[0] = digitalRead(PIN1); curr_values[1] = digitalRead(PIN2);    curr_values[2] = digitalRead(PIN3);    curr_values[3] = digitalRead(PIN4);
+  curr_values[0] = digitalRead(PIN1);
+  curr_values[1] = digitalRead(PIN2);
+  curr_values[2] = digitalRead(PIN3);
+  curr_values[3] = digitalRead(PIN4);
 
   if (curr_values[0] == 0) {
     M5.Lcd.clear();
