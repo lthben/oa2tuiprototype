@@ -17,6 +17,10 @@
 #include <Arduino.h>
 #include <M5StickCPlus.h>
 #include <DFRobot_PAJ7620U2.h>
+#include "backward-icon.h"
+#include "forward-icon.h"
+#include "repeat-icon.h"
+#include "pause-icon.h"
 
 DFRobot_PAJ7620U2 paj;
 
@@ -53,7 +57,7 @@ void setup()
 
   M5.Lcd.setRotation(1); // Rotate the screen. 将屏幕旋转
 
-  M5.Lcd.drawCentreString("Gesture", 120, 60, 4);
+  M5.Lcd.drawCentreString("Gesture", 120, 60, 4); // text, centre_x, centre_y, fontsize
 }
 
 void loop()
@@ -97,13 +101,17 @@ void loop()
     M5.Lcd.fillScreen(BLACK);
 
     if (gesture == 4)
-      M5.Lcd.drawCentreString("Up", 120, 60, 4);
+      // M5.Lcd.drawCentreString("Up", 120, 60, 4);
+      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)pause_icon);
     else if (gesture == 8)
-      M5.Lcd.drawCentreString("Down", 120, 60, 4);
+      // M5.Lcd.drawCentreString("Down", 120, 60, 4);
+      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)repeat_icon);
     else if (gesture == 1)
-      M5.Lcd.drawCentreString("Right", 120, 60, 4);
+      // M5.Lcd.drawCentreString("Right", 120, 60, 4);
+      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)forward_icon);
     else if (gesture == 2)
-      M5.Lcd.drawCentreString("Left", 120, 60, 4);
+      // M5.Lcd.drawCentreString("Left", 120, 60, 4);
+      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)backward_icon);
     else if (gesture == 64)
       M5.Lcd.drawCentreString("Clockwise", 120, 60, 4);
     else if (gesture == 128)
