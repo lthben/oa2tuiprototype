@@ -10,15 +10,15 @@
 * Date: 2021/9/14
 *******************************************************************************
 */
+// screen resolution for M5stickPlus: 240 x 135
+
 #include <Arduino.h>
 #include <M5StickCPlus.h>
 #include <M5Display.h>
-#include "adventure-icon.h"
-#include "elf-icon.h"
-#include "unicorn-icon.h"
-#include "knight-icon.h"
-#include "sword-icon.h"
-#include "spellbook-icon.h"
+#include "confused-icon.h"
+#include "frown-icon.h"
+#include "hmm-icon.h"
+#include "smiles-icon.h"
 
 float accX = 0.0F;
 float accY = 0.0F;
@@ -51,7 +51,6 @@ void setup()
 }
 
 void loop()
-// screen resolution for M5stickPlus: 240 x 135
 {
 
   static float temp = 0;
@@ -76,29 +75,39 @@ void loop()
   // M5.Lcd.printf(" %5.2f   %5.2f   %5.2f   ", pitch, roll, yaw);
 
   if (pitch > -30 && pitch < 30 && roll > -30 && roll < 30)
+  {
     // displayResult("1");
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)adventure_icon_logo);
-
+    M5.Lcd.fillScreen(BLACK);
+  }
   else if (pitch < -60 && pitch > -120 && roll > 60 && roll < 120)
+  {
     // displayResult("2");
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)elf_icon_logo);
-
+    M5.Lcd.setRotation(1); // set screen orientation
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)frown_icon);
+  }
   else if (pitch > 60 && pitch < 120 && roll > -120 && roll < -50)
+  {
     // displayResult("3");
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)unicorn_icon_logo);
-
+    M5.Lcd.setRotation(3); // set screen orientation
+    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)confused_icon);
+  }
   else if (pitch > -30 && pitch < 30 && roll > -120 && roll < -60)
+  {
     // displayResult("4");
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)sword_icon_logo);
-
+    M5.Lcd.setRotation(2); // set screen orientation
+    M5.Lcd.drawBitmap(3, 56, logoWidth, logoHeight, (uint16_t *)hmm_icon);
+  }
   else if (pitch > -30 && pitch < 30 && roll > 60 && roll < 120)
+  {
     // displayResult("5");
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)spellbook_icon_logo);
-
+    M5.Lcd.setRotation(4); // set screen orientation
+    M5.Lcd.drawBitmap(3, 56, logoWidth, logoHeight, (uint16_t *)smiles_icon);
+  }
   else if (pitch > -30 && pitch < 30 && (roll > 150 || roll < -150))
+  {
     // displayResult("6");
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)knight_icon_logo);
-
+    M5.Lcd.fillScreen(BLACK);
+  }
   else
     displayResult("");
 
