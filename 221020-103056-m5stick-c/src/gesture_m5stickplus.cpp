@@ -53,6 +53,7 @@ void setup()
     Since users only use limited gestures in this mode, we are not going to integrate too much expanded gestures in the library.
     If necessary, you can complete the algorithm logic in the ino file by yourself.
   */
+
   paj.setGestureHighRate(true);
 
   M5.Lcd.setRotation(1); // Rotate the screen. 将屏幕旋转
@@ -102,10 +103,10 @@ void loop()
 
     if (gesture == 4)
       // M5.Lcd.drawCentreString("Up", 120, 60, 4);
-      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)pause_icon);
+      M5.Lcd.drawBitmap(60, 7, 120, 120, (uint16_t *)pause_icon);
     else if (gesture == 8)
       // M5.Lcd.drawCentreString("Down", 120, 60, 4);
-      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)repeat_icon);
+      M5.Lcd.drawBitmap(60, 7, 120, 120, (uint16_t *)repeat_icon);
     else if (gesture == 1)
       // M5.Lcd.drawCentreString("Right", 120, 60, 4);
       M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)forward_icon);
