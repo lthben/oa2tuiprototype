@@ -33,6 +33,8 @@ float roll = 0.0F;
 float yaw = 0.0F;
 
 void displayResult(String myText);
+void resetScreen();
+int currVal, prevVal;
 
 void setup()
 {
@@ -74,47 +76,98 @@ void loop()
   // M5.Lcd.setCursor(30, 25);
   // M5.Lcd.printf(" %5.2f   %5.2f   %5.2f   ", pitch, roll, yaw);
 
-  if (pitch > -30 && pitch < 30 && roll > -30 && roll < 30)
-  {
-    // displayResult("1");
-    M5.Lcd.fillScreen(BLACK);
-  }
-  else if (pitch < -60 && pitch > -120 && roll > 60 && roll < 120)
+  // if (pitch > -30 && pitch < 30 && roll > -30 && roll < 30)
+  // {
+  // displayResult("1");
+  // }
+  if (pitch < -60 && pitch > -120 && roll > 60 && roll < 120)
   {
     // displayResult("2");
-    M5.Lcd.setRotation(1); // set screen orientation
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)frown_icon);
+    currVal = 2;
+    if (currVal != prevVal)
+    {
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.setRotation(1); // set screen orientation
+      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)frown_icon);
+      resetScreen();
+    }
   }
   else if (pitch > 60 && pitch < 120 && roll > -120 && roll < -50)
   {
     // displayResult("3");
-    M5.Lcd.setRotation(3); // set screen orientation
-    M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)confused_icon);
+    currVal = 3;
+    if (currVal != prevVal)
+    {
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.setRotation(3); // set screen orientation
+      M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)confused_icon);
+      resetScreen();
+    }
   }
   else if (pitch > -30 && pitch < 30 && roll > -120 && roll < -60)
   {
     // displayResult("4");
-    M5.Lcd.setRotation(2); // set screen orientation
-    M5.Lcd.drawBitmap(3, 56, logoWidth, logoHeight, (uint16_t *)hmm_icon);
+    currVal = 4;
+    if (currVal != prevVal)
+    {
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.setRotation(2); // set screen orientation
+      M5.Lcd.drawBitmap(3, 56, logoWidth, logoHeight, (uint16_t *)hmm_icon);
+      resetScreen();
+    }
   }
   else if (pitch > -30 && pitch < 30 && roll > 60 && roll < 120)
   {
     // displayResult("5");
-    M5.Lcd.setRotation(4); // set screen orientation
-    M5.Lcd.drawBitmap(3, 56, logoWidth, logoHeight, (uint16_t *)smiles_icon);
+    currVal = 5;
+    if (currVal != prevVal)
+    {
+      M5.Lcd.fillScreen(BLACK);
+      M5.Lcd.setRotation(4); // set screen orientation
+      M5.Lcd.drawBitmap(3, 56, logoWidth, logoHeight, (uint16_t *)smiles_icon);
+      resetScreen();
+    }
   }
-  else if (pitch > -30 && pitch < 30 && (roll > 150 || roll < -150))
-  {
-    // displayResult("6");
-    M5.Lcd.fillScreen(BLACK);
-  }
+  // else if (pitch > -30 && pitch < 30 && (roll > 150 || roll < -150))
+  // {
+  //   displayResult("6");
+  // }
   else
-    displayResult("");
+    displayResult("Rotate the device");
 
   delay(30); // determines the responsiveness, tradeoff with dither, 30ms is sweet spot
 }
 
+void resetScreen()
+{
+  delay(1000);
+  M5.Lcd.fillScreen(BLACK);
+  displayResult("Rotate the device");
+  prevVal = currVal;
+}
+
 void displayResult(String myText)
 {
-  M5.Lcd.drawString(myText, 120, 62, 4);
+  if (currVal == 3) // confused
+  {
+    M5.Lcd.setRotation(3); // set screen orientation
+    M5.Lcd.drawCentreString(myText, 120, 62, 4);
+  }
+  else if (currVal == 2) // frown
+  {
+    M5.Lcd.setRotation(1);
+    M5.Lcd.drawCentreString(myText, 120, 62, 4);
+  }
+  else if (currVal == 4) // hmm
+  {
+    M5.Lcd.setRotation(2);
+    M5.Lcd.drawCentreString("Rotate", 62, 110, 4);
+    M5.Lcd.drawCentreString("the device", 62, 130, 4);
+  }
+  else if (currVal == 5) // smile
+  {
+    M5.Lcd.setRotation(4);
+    M5.Lcd.drawCentreString("Rotate", 62, 110, 4);
+    M5.Lcd.drawCentreString("the device", 62, 130, 4);
+  }
 }

@@ -101,28 +101,73 @@ void loop()
 
     M5.Lcd.fillScreen(BLACK);
 
-    if (gesture == 4)
-      // M5.Lcd.drawCentreString("Up", 120, 60, 4);
+    if (gesture == 4) // UP
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawBitmap(60, 7, 120, 120, (uint16_t *)pause_icon);
-    else if (gesture == 8)
-      // M5.Lcd.drawCentreString("Down", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
+    else if (gesture == 8) // DOWN
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawBitmap(60, 7, 120, 120, (uint16_t *)repeat_icon);
-    else if (gesture == 1)
-      // M5.Lcd.drawCentreString("Right", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
+    else if (gesture == 1) // RIGHT
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)forward_icon);
-    else if (gesture == 2)
-      // M5.Lcd.drawCentreString("Left", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
+    else if (gesture == 2) // LEFT
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawBitmap(56, 3, logoWidth, logoHeight, (uint16_t *)backward_icon);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
     else if (gesture == 64)
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawCentreString("Clockwise", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
     else if (gesture == 128)
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawCentreString("Anti-clockwise", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
     else if (gesture == 16)
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawCentreString("Forward", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
     else if (gesture == 32)
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawCentreString("Backward", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
     else
-      // else if (gesture == 3 || gesture == 12 || gesture == 48 || gesture == 256 || gesture == 512)
+    // else if (gesture == 3 || gesture == 12 || gesture == 48 || gesture == 256 || gesture == 512)
+    {
+      M5.Lcd.fillScreen(BLACK);
       M5.Lcd.drawCentreString("Wave", 120, 60, 4);
+      delay(1000);
+      M5.Lcd.fillScreen(BLACK);
+    }
+  }
+  else
+  { // NO GESTURE
+    M5.Lcd.drawCentreString("Perform a gesture", 120, 60, 4);
   }
 }
