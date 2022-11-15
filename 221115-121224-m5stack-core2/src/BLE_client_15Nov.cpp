@@ -6,11 +6,17 @@
  */
 
 #include <Arduino.h>
+#include <M5Core2.h>
 #include "BLEDevice.h"
 //#include "BLEScan.h"
+#include "sad_icon.h"
+#include "neutral_icon.h"
+#include "happy_icon.h"
+
+// Screen pixels are 320x240, with the upper left corner of the screen as the origin(0, 0)
 
 // The remote service we wish to connect to.
-static BLEUUID serviceUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+static BLEUUID serviceUUID("4fafc201-1fb5-459e-8fcc-c5c9c331914a"); // last char is "a" for IMU and "b" for gesture
 // The characteristic of the remote service we are interested in.
 static BLEUUID charUUID("beb5483e-36e1-4688-b7f5-ea07361b26a8");
 
@@ -19,6 +25,8 @@ static boolean connected = false;
 static boolean doScan = false;
 static BLERemoteCharacteristic *pRemoteCharacteristic;
 static BLEAdvertisedDevice *myDevice;
+
+String currVal, prevVal;
 
 static void notifyCallback(
     BLERemoteCharacteristic *pBLERemoteCharacteristic,
@@ -38,12 +46,13 @@ class MyClientCallback : public BLEClientCallbacks
 {
   void onConnect(BLEClient *pclient)
   {
+    Serial.println("Server connected");
   }
 
   void onDisconnect(BLEClient *pclient)
   {
     connected = false;
-    Serial.println("onDisconnect");
+    Serial.println("Server disconnected");
   }
 };
 
@@ -88,6 +97,7 @@ bool connectToServer()
   if (pRemoteCharacteristic->canRead())
   {
     std::string value = pRemoteCharacteristic->readValue();
+    currVal = value.c_str();
     Serial.print("The characteristic value was: ");
     Serial.println(value.c_str());
   }
@@ -114,7 +124,6 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
     // We have found a device, let us now see if it contains the service we are looking for.
     if (advertisedDevice.haveServiceUUID() && advertisedDevice.isAdvertisingService(serviceUUID))
     {
-
       BLEDevice::getScan()->stop();
       myDevice = new BLEAdvertisedDevice(advertisedDevice);
       doConnect = true;
@@ -124,8 +133,48 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks
   }   // onResult
 };    // MyAdvertisedDeviceCallbacks
 
+void displayDashboard(String val)
+{
+  // M5.Lcd.setTextColor(WHITE);
+  // M5.Lcd.drawCentreString(val, 160, 120, 4);
+
+  M5.Lcd.drawBitmap(80, 24, 48, 48, (uint16_t *)happy_icon);
+  M5.Lcd.drawBitmap(80, 96, 48, 48, (uint16_t *)neutral_icon);
+  M5.Lcd.drawBitmap(80, 168, 48, 48, (uint16_t *)sad_icon);
+
+  if (val == "smile")
+  {
+    M5.Lcd.drawString("23", 180, 30, 6);
+    M5.Lcd.drawString("12", 180, 110, 4);
+    M5.Lcd.drawString("5", 180, 180, 2);
+  }
+  if (val == "hmm")
+  {
+    M5.Lcd.drawString("13", 180, 40, 4);
+    M5.Lcd.drawString("20", 180, 100, 6);
+    M5.Lcd.drawString("8", 180, 180, 2);
+  }
+  if (val == "confused")
+  {
+    M5.Lcd.drawString("12", 180, 40, 4);
+    M5.Lcd.drawString("12", 180, 110, 4);
+    M5.Lcd.drawString("16", 180, 180, 4);
+  }
+  if (val == "frown")
+  {
+    M5.Lcd.drawString("5", 180, 40, 2);
+    M5.Lcd.drawString("12", 180, 110, 4);
+    M5.Lcd.drawString("23", 180, 170, 6);
+  }
+}
+
 void setup()
 {
+  M5.begin();
+  M5.Lcd.setRotation(1);
+  M5.Lcd.drawCentreString("BLE Client", 160, 120, 4);
+  delay(1000);
+
   Serial.begin(115200);
   Serial.println("Starting Arduino BLE Client application...");
   BLEDevice::init("");
@@ -173,14 +222,25 @@ void loop()
 
     //        if(pRemoteCharacteristic->canRead()) {
     std::string value = pRemoteCharacteristic->readValue();
-    Serial.print("The characteristic value was: ");
-    Serial.println(value.c_str());
+    currVal = value.c_str();
+    if (currVal != prevVal)
+    {
+      Serial.print("The characteristic value was: ");
+      Serial.println(value.c_str());
+
+      M5.Lcd.clear();
+      displayDashboard(currVal);
+
+      prevVal = currVal;
+    }
     //    }
   }
-  else if (doScan)
+  // else if (doScan)
+  else
   {
     BLEDevice::getScan()->start(0); // this is just example to start scan after disconnect, most likely there is better way to do it in arduino
+    delay(2000);
   }
 
-  delay(1000); // Delay a second between loops.
+  delay(100); // Delay a second between loops.
 } // End of loop
