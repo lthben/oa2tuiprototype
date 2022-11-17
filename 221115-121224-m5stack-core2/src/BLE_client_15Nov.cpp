@@ -187,29 +187,31 @@ void setup()
   pBLEScan->setInterval(1349);
   pBLEScan->setWindow(449);
   pBLEScan->setActiveScan(true);
-  pBLEScan->start(5, false);
+
+  // If the flag "doConnect" is true then we have scanned for and found the desired
+  // BLE Server with which we wish to connect.  Now we connect to it.  Once we are
+  // connected we set the connected flag to be true.
+  while (!connected)
+  {
+    pBLEScan->start(5, false); // this sets doConnect to true if the specific device is found
+    if (doConnect == true)
+    {
+      if (connectToServer()) // this sets connected to true
+      {
+        Serial.println("We are now connected to the BLE Server.");
+      }
+      else
+      {
+        Serial.println("We have failed to connect to the server; there is nothin more we will do.");
+      }
+      doConnect = false;
+    }
+  }
 } // End of setup.
 
 // This is the Arduino main loop function.
 void loop()
 {
-
-  // If the flag "doConnect" is true then we have scanned for and found the desired
-  // BLE Server with which we wish to connect.  Now we connect to it.  Once we are
-  // connected we set the connected flag to be true.
-  if (doConnect == true)
-  {
-    if (connectToServer())
-    {
-      Serial.println("We are now connected to the BLE Server.");
-    }
-    else
-    {
-      Serial.println("We have failed to connect to the server; there is nothin more we will do.");
-    }
-    doConnect = false;
-  }
-
   // If we are connected to a peer BLE Server, update the characteristic each time we are reached
   // with the current time since boot.
   if (connected)

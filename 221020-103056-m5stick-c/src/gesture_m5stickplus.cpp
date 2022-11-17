@@ -56,7 +56,7 @@ void setup()
 
   paj.setGestureHighRate(true);
 
-  M5.Lcd.setRotation(1); // Rotate the screen. 将屏幕旋转
+  M5.Lcd.setRotation(3); // Rotate the screen. 将屏幕旋转
 
   M5.Lcd.drawCentreString("Gesture", 120, 60, 4); // text, centre_x, centre_y, fontsize
 }
