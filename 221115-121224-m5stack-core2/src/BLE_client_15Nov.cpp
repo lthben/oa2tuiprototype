@@ -184,28 +184,25 @@ void setup()
   // scan to run for 5 seconds.
   BLEScan *pBLEScan = BLEDevice::getScan();
   pBLEScan->setAdvertisedDeviceCallbacks(new MyAdvertisedDeviceCallbacks());
-  pBLEScan->setInterval(1349);
-  pBLEScan->setWindow(449);
+  pBLEScan->setInterval(100); // 1349
+  pBLEScan->setWindow(99);    // 449
   pBLEScan->setActiveScan(true);
+  pBLEScan->start(5, false); // this sets doConnect to true if the specific device is found
 
   // If the flag "doConnect" is true then we have scanned for and found the desired
   // BLE Server with which we wish to connect.  Now we connect to it.  Once we are
   // connected we set the connected flag to be true.
-  while (!connected)
+  if (doConnect == true)
   {
-    pBLEScan->start(5, false); // this sets doConnect to true if the specific device is found
-    if (doConnect == true)
+    if (connectToServer())
     {
-      if (connectToServer()) // this sets connected to true
-      {
-        Serial.println("We are now connected to the BLE Server.");
-      }
-      else
-      {
-        Serial.println("We have failed to connect to the server; there is nothin more we will do.");
-      }
-      doConnect = false;
+      Serial.println("We are now connected to the BLE Server.");
     }
+    else
+    {
+      Serial.println("We have failed to connect to the server; there is nothin more we will do.");
+    }
+    doConnect = false;
   }
 } // End of setup.
 
@@ -240,8 +237,19 @@ void loop()
   // else if (doScan)
   else
   {
-    BLEDevice::getScan()->start(0); // this is just example to start scan after disconnect, most likely there is better way to do it in arduino
-    delay(2000);
+    BLEDevice::getScan()->start(5, false); // this is just example to start scan after disconnect, most likely there is better way to do it in arduino
+    if (doConnect == true)
+    {
+      if (connectToServer())
+      {
+        Serial.println("We are now connected to the BLE Server.");
+      }
+      else
+      {
+        Serial.println("We have failed to connect to the server; there is nothin more we will do.");
+      }
+      doConnect = false;
+    }
   }
 
   delay(100); // Delay a second between loops.

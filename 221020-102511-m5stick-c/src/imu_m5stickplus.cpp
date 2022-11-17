@@ -23,6 +23,7 @@
 #include <BLEDevice.h>
 #include <BLEUtils.h>
 #include <BLEServer.h>
+#include <BLE2902.h>
 
 #define SERVICE_UUID "4fafc201-1fb5-459e-8fcc-c5c9c331914a"
 #define CHARACTERISTIC_UUID "beb5483e-36e1-4688-b7f5-ea07361b26a8"
@@ -44,7 +45,25 @@ void resetScreen();
 void notifyClient(String myText);
 int currVal, prevVal;
 
-BLECharacteristic *pCharacteristic;
+BLEServer *pServer = NULL;
+BLECharacteristic *pCharacteristic = NULL;
+bool deviceConnected = false;
+bool oldDeviceConnected = false;
+
+class MyServerCallbacks : public BLEServerCallbacks
+{
+  void onConnect(BLEServer *pServer)
+  {
+    deviceConnected = true;
+    Serial.println("device connected");
+  };
+
+  void onDisconnect(BLEServer *pServer)
+  {
+    deviceConnected = false;
+    Serial.println("device disconnected");
+  }
+};
 
 void setup()
 {
@@ -67,26 +86,30 @@ void setup()
   BLEDevice::init("IMU Sensor BLE Device");
 
   // Create Server
-  BLEServer *pServer = BLEDevice::createServer();
+  pServer = BLEDevice::createServer();
+  pServer->setCallbacks(new MyServerCallbacks());
 
   // Create Service
   BLEService *pService = pServer->createService(SERVICE_UUID);
 
+  // Create a BLE Characteristic
   pCharacteristic = pService->createCharacteristic(
       CHARACTERISTIC_UUID,
       BLECharacteristic::PROPERTY_READ |
-          BLECharacteristic::PROPERTY_WRITE);
+          BLECharacteristic::PROPERTY_WRITE |
+          BLECharacteristic::PROPERTY_NOTIFY |
+          BLECharacteristic::PROPERTY_INDICATE);
 
+  // pCharacteristic->addDescriptor(new BLE2902());
   pCharacteristic->setValue("Hello World says IMU Sensor");
   pService->start();
   // BLEAdvertising *pAdvertising = pServer->getAdvertising();  // this still is working for backward compatibility
   BLEAdvertising *pAdvertising = BLEDevice::getAdvertising();
   pAdvertising->addServiceUUID(SERVICE_UUID);
   pAdvertising->setScanResponse(true);
-  pAdvertising->setMinPreferred(0x06); // functions that help with iPhone connections issue
-  pAdvertising->setMinPreferred(0x12);
+  pAdvertising->setMinPreferred(0x0);
   BLEDevice::startAdvertising();
-  Serial.println("Characteristic defined!");
+  Serial.println("Waiting a client connection to notify...");
 }
 
 void loop()
@@ -176,11 +199,31 @@ void loop()
   else
     displayInstruction();
 
-  std::string value;
-  value = pCharacteristic->getValue();
-  printf("\nThe characteristic is: %s", value);
+  // std::string value;
+  // value = pCharacteristic->getValue();
+  // printf("\nThe characteristic is: %s", value);
 
   delay(30); // determines the responsiveness, tradeoff with dither, 30ms is sweet spot
+
+  // disconnecting
+  if (!deviceConnected && oldDeviceConnected) // if we were connected before but disconnected now
+  {
+    delay(500);                  // give the bluetooth stack the chance to get things ready
+    pServer->startAdvertising(); // restart advertising
+    Serial.println("start advertising");
+    oldDeviceConnected = deviceConnected;
+  }
+  // connecting
+  else if (deviceConnected && !oldDeviceConnected) // if we are connected but were not before
+  {
+    oldDeviceConnected = deviceConnected;
+  }
+  // else
+  // {
+  //   delay(500);                  // give the bluetooth stack the chance to get things ready
+  //   pServer->startAdvertising(); // restart advertising
+  //   Serial.println("start advertising");
+  // }
 }
 
 void resetScreen()
@@ -194,9 +237,21 @@ void resetScreen()
 void notifyClient(String myText)
 {
   pCharacteristic->setValue(myText.c_str());
-  Serial.print("Notifying client that the value is: ");
-  Serial.println(myText);
-  pCharacteristic->notify();
+  Serial.print("The characteristic is: ");
+  Serial.println(pCharacteristic->getValue().c_str());
+
+  if (deviceConnected)
+  {
+    pCharacteristic->notify();
+    Serial.print("Notifying client that the value is: ");
+    Serial.println(myText);
+  }
+  else
+  {
+    delay(500);                  // give the bluetooth stack the chance to get things ready
+    pServer->startAdvertising(); // restart advertising
+    Serial.println("start advertising");
+  }
 }
 
 void displayInstruction()
